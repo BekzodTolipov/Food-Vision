@@ -181,14 +181,14 @@ if img_file_buffer is not None:
     outputs = layers.Activation("softmax", dtype=tf.float32, name="softmax_float32")(x)
     model = tf.keras.Model(inputs, outputs)
 
+    temp = model.load_weights("food_vision_big_fine_tuned.h5")
+
     # Compile the model
     model.compile(
         loss="sparse_categorical_crossentropy",
         optimizer=Adam(learning_rate=1e-4),
         metrics=["accuracy"],
     )
-
-    temp = model.load_weights("food_vision_big_fine_tuned.h5", by_name=True)
 
     pred = model.predict(img)
 
