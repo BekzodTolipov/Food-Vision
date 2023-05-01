@@ -167,43 +167,47 @@ elif picture_source_option == "Upload Picture":
     # Display the uploaded image
     if uploaded_file is not None:
         img = Image.open(uploaded_file)
-        st.image(img, caption="Uploaded Image", use_column_width=True)
-
         read_for_model = True
 
 if read_for_model:
     img = preprocess_image(img)
     img = tf.expand_dims(img, axis=0)
 
-    # Create base model
-    input_shape = (*(224, 224), 3)
-    base_model = EfficientNetB0(include_top=False)
+    with st.spinner("Wait for it..."):
+        # Create base model
+        input_shape = (*(224, 224), 3)
+        base_model = EfficientNetB0(include_top=False)
 
-    # Unfreeze last 5 layers of base model
-    base_model.trainable = True
-    for layer in base_model.layers[:-5]:
-        layer.trainable = False
+        # Unfreeze last 5 layers of base model
+        base_model.trainable = True
+        for layer in base_model.layers[:-5]:
+            layer.trainable = False
 
-    # Create functional model
-    inputs = layers.Input(shape=input_shape, name="input_layer")
-    # Note: EfficientNetBX models have rescaling built-in
-    x = base_model(
-        inputs, training=False
-    )  # make sure layers which should be in inference
-    x = layers.GlobalAveragePooling2D()(x)
-    x = layers.Dense(101)(x)
-    outputs = layers.Activation("softmax", dtype=tf.float32, name="softmax_float32")(x)
-    model = tf.keras.Model(inputs, outputs)
+        # Create functional model
+        inputs = layers.Input(shape=input_shape, name="input_layer")
+        # Note: EfficientNetBX models have rescaling built-in
+        x = base_model(
+            inputs, training=False
+        )  # make sure layers which should be in inference
+        x = layers.GlobalAveragePooling2D()(x)
+        x = layers.Dense(101)(x)
+        outputs = layers.Activation(
+            "softmax", dtype=tf.float32, name="softmax_float32"
+        )(x)
+        model = tf.keras.Model(inputs, outputs)
 
-    temp = model.load_weights("food_vision_big_fine_tuned.h5")
+        temp = model.load_weights("food_vision_big_fine_tuned.h5")
 
-    # Compile the model
-    model.compile(
-        loss="sparse_categorical_crossentropy",
-        optimizer=Adam(learning_rate=1e-4),
-        metrics=["accuracy"],
+        # Compile the model
+        model.compile(
+            loss="sparse_categorical_crossentropy",
+            optimizer=Adam(learning_rate=1e-4),
+            metrics=["accuracy"],
+        )
+
+        pred = model.predict(img)
+
+    st.success("Done!")
+    st.header(
+        f"Model prediction: :blue[{class_names[pred.argmax()]}]\n\nPrediction Probability: :red[{round((pred.max() * 100), 2)}]%"
     )
-
-    pred = model.predict(img)
-
-    st.write(class_names[pred.argmax()])
