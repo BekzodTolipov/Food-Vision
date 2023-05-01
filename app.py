@@ -138,6 +138,7 @@ Here's a brief summary of the project and its contents:
 \nThe project also contains a app.py file, which allows you to use the trained model to classify new food images.
 \nThe app.py file takes image from camera as input and returns the predicted class label and probability.
 \n\nOverall, the project provides a useful example of how to use transfer learning with EfficientNetB0 for food image classification and includes a complete pipeline for data preparation, model building, training, and evaluation.
+\n\n You can view experiment history on tensorboard: https://tensorboard.dev/experiment/zza1tN5qRjuJH2Rhp3eCPg/#scalars
 """
 )
 
@@ -157,7 +158,7 @@ if img_file_buffer is not None:
     st.image(img)
 
     img = tf.image.resize(img, [224, 224])
-    img = np.expand_dims(img, axis=0)
+    img = tf.expand_dims(img, axis=0)
     st.write(img.shape)
 
     # Create base model
@@ -191,4 +192,4 @@ if img_file_buffer is not None:
 
     pred = model.predict(img)
 
-    st.write(class_names[pred.argmax(axis=1)[0]])
+    st.write(class_names[pred.argmax()])
