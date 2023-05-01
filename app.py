@@ -8,7 +8,7 @@ from tensorflow.keras.optimizers import Adam
 
 
 # Make a function for preprocessing images
-def preprocess_image(image, label, img_shape=224):
+def preprocess_image(image, img_shape=224):
     """
     Converts image datatype from 'uint8' -> 'float32' and reshapes image to [image_shape, image_shape, color_channel]
     """
@@ -16,7 +16,7 @@ def preprocess_image(image, label, img_shape=224):
     image = tf.image.resize(image, [img_shape, img_shape])
     # image = image/255. # Not required with EfficientNetBX models from tf.keras.applications
 
-    return tf.cast(image, tf.float32), label
+    return tf.cast(image, tf.float32)
 
 
 class_names = [
@@ -155,9 +155,7 @@ if img_file_buffer is not None:
     # Should output shape: (height, width, channels)
     st.write(img.shape)
 
-    st.image(img)
-
-    img = tf.image.resize(img, [224, 224])
+    img = preprocess_image(img)
     img = tf.expand_dims(img, axis=0)
     st.write(img.shape)
 
