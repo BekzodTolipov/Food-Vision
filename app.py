@@ -1,4 +1,3 @@
-import imageio as iio
 import numpy as np
 import streamlit as st
 import tensorflow as tf
@@ -124,7 +123,23 @@ class_names = [
     "waffles",
 ]
 
-st.title('Hello')
+st.title("Food Vision")
+st.subheader(
+    """
+Here's a brief summary of the project and its contents:
+
+\n\nThe main focus of the project is to use transfer learning with EfficientNetB0 to classify food images.
+\nThe project contains a Jupyter notebook named food-vision.ipynb, which contains the code for training and evaluating the model.
+\nThe notebook is divided into sections that cover data preparation, model building, and training and evaluation.
+\nThe data for the project is obtained from the Food-101 dataset, which contains 101 categories of food images.
+\nThe data preparation section includes code for downloading the dataset, splitting it into training and validation sets, and augmenting the images using techniques like rotation, zooming, and flipping.
+\nThe model building section includes code for defining the EfficientNetB0 model and adding a custom output layer for classification.
+\nThe training and evaluation section includes code for compiling the model, training it on the dataset, and evaluating its performance on the validation set.
+\nThe project also contains a predict.py file, which allows you to use the trained model to classify new food images.
+\nThe predict.py file takes the path to the image file as input and returns the predicted class label and probability.
+\n\nOverall, the project provides a useful example of how to use transfer learning with EfficientNetB0 for food image classification and includes a complete pipeline for data preparation, model building, training, and evaluation.
+"""
+)
 
 img_file_buffer = st.camera_input("Take a picture")
 
