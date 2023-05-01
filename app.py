@@ -142,22 +142,38 @@ Here's a brief summary of the project and its contents:
 """
 )
 
-img_file_buffer = st.camera_input("Take a picture")
+picture_source_option = st.radio(
+    "Would you like to take a picture or upload one?",
+    ("Upload Picture", "Take a Picture"),
+)
+read_for_model = False
 
-if img_file_buffer is not None:
-    # To read image file buffer as a PIL Image:
-    img = Image.open(img_file_buffer)
+if picture_source_option == "Take a Picture":
+    img_file_buffer = st.camera_input("Take a picture")
 
-    # To convert PIL Image to numpy array:
-    img = np.array(img)
+    if img_file_buffer is not None:
+        # To read image file buffer as a PIL Image:
+        img = Image.open(img_file_buffer)
 
-    # Check the shape of img_array:
-    # Should output shape: (height, width, channels)
-    st.write(img.shape)
+        # To convert PIL Image to numpy array:
+        img = np.array(img)
 
+        read_for_model = True
+
+elif picture_source_option == "Upload Picture":
+    # Define the file uploader
+    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+
+    # Display the uploaded image
+    if uploaded_file is not None:
+        img = Image.open(uploaded_file)
+        st.image(img, caption="Uploaded Image", use_column_width=True)
+
+        read_for_model = True
+
+if read_for_model:
     img = preprocess_image(img)
     img = tf.expand_dims(img, axis=0)
-    st.write(img.shape)
 
     # Create base model
     input_shape = (*(224, 224), 3)
