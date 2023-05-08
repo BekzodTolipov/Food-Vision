@@ -209,5 +209,5 @@ if read_for_model:
 
     st.success("Done!")
     st.header(
-        f"Model prediction: :blue[{class_names[pred.argmax()].split('_').capitalize()}]\n\nPrediction Probability: :red[{round((pred.max() * 100), 2)}]%"
+        f"Model prediction: :blue[{' '.join(class_names[pred.argmax()].split('_')).capitalize()}]\n\nPrediction Probability: :red[{round((pred.max() * 100), 2)}]%"
     )
